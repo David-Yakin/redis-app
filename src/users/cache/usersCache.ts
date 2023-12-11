@@ -1,5 +1,6 @@
 import { NextFunction, Response, Request } from "express";
 import RedisClient from "../../cache/redis";
+import UserInterface from "../interfaces/UserInterface";
 
 export const getCachedUsers = async (
   req: Request,
@@ -23,14 +24,15 @@ export const getCachedUser = async (
 ) => {
   try {
     const { id: userId } = req.params;
-    const cachedUsers = await RedisClient.json.get("users");
-    const cachedUser = JSON.parse(String(cachedUsers)).find(
-      (user: any) => user._id === userId
-    );
-    if (!cachedUser) return next();
-    const normalizeUsers = JSON.parse(String(cachedUser));
+    const cachedUsers = (await RedisClient.json.get(
+      "users"
+    )) as UserInterface | null;
+
+    if (!cachedUsers || Array.isArray(cachedUsers) === false) return next();
+    const cachedUser = cachedUsers.find((user) => user._id === userId);
+
     console.log("user from cache!!!");
-    return res.send(normalizeUsers);
+    return res.send(cachedUser);
   } catch (error) {
     next();
   }

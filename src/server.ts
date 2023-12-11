@@ -8,6 +8,7 @@ config();
 import router from "./router/router";
 import morgan from "./logger/morgan";
 import cors from "./cors/cors";
+import { handleServerError } from "./utils/handleErrors";
 const { EXPRESS_BASE_URL, EXPRESS_PORT } = process.env;
 
 app.use(morgan);
@@ -15,6 +16,7 @@ app.use(cors);
 app.use(express.json());
 app.use(express.text());
 app.use(router);
+app.use(handleServerError);
 
 app.listen(EXPRESS_PORT, () => {
   console.log(

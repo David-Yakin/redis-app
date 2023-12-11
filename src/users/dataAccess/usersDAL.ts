@@ -10,6 +10,7 @@ export const getUsersFromDB = async () => {
     return Promise.reject(error);
   }
 };
+
 export const addNewUserToDb = async (normalizedUser: UserInterface) => {
   try {
     const user = new User(normalizedUser);
